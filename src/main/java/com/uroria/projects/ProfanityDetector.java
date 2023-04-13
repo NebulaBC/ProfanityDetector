@@ -2,16 +2,21 @@ package com.uroria.projects;
 
 public final class ProfanityDetector {
 
+    public static String replaceCharacterReplacements(String text) {
+        return text.replace("€", "e")
+                .replace("€", "e")
+                .replace("@", "a")
+                .replace("!", "i")
+                .replace("1", "i")
+                .replace("3", "e")
+                .replace("4", "a")
+                .replace("?", "i")
+                .replace("#", "a");
+    }
+
     public static boolean containsOffensiveWords(String text, double sensitivity, String... offensiveWords) {
         text = text.toLowerCase();
-        text = text.replace("€", "e");
-        text = text.replace("@", "a");
-        text = text.replace("!", "i");
-        text = text.replace("1", "i");
-        text = text.replace("3", "e");
-        text = text.replace("4", "a");
-        text = text.replace("?", "i");
-        text = text.replace("#", "a");
+        text = replaceCharacterReplacements(text);
 
         for (String word : text.split(" ")) {
             for (String offensiveWord : offensiveWords) {
