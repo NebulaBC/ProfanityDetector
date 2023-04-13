@@ -1,4 +1,6 @@
-# Profanity Detector for Java
+[![](https://jitpack.io/v/Uroria/ProfanityDetector.svg)](https://jitpack.io/#Uroria/ProfanityDetector)
+
+## Profanity Detector for Java
 
 **How to use this:**
 
