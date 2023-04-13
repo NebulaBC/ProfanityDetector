@@ -28,6 +28,20 @@ public final class ProfanityDetector {
         return false;
     }
 
+    public static double getOffensiveWordPercentage(String text, String... offensiveWords) {
+        text = text.toLowerCase();
+        text = replaceCharacterReplacements(text);
+        double percentage = 0.0;
+        for (String word : text.split(" ")) {
+            for (String offensiveWord : offensiveWords) {
+                double offensive = findSimilarity(word, offensiveWord);
+                percentage = percentage + offensive;
+            }
+        }
+        percentage = percentage / text.length();
+        return percentage;
+    }
+
     public static double findSimilarity(String comparedWord, String word) {
         if (comparedWord.equalsIgnoreCase(word)) return 1.0;
         double maxLength = Double.max(comparedWord.length(), word.length());
