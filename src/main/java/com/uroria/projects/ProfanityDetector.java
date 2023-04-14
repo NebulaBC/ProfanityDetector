@@ -18,8 +18,12 @@ public final class ProfanityDetector {
         text = text.toLowerCase();
         text = replaceCharacterReplacements(text);
 
+        text = text.replace(".", " ").replace(",", " ");
+
         for (String word : text.split(" ")) {
+            word = removeDuplicates(word);
             for (String offensiveWord : offensiveWords) {
+                if (word.equals(offensiveWord)) return true;
                 double offensive = findSimilarity(word, offensiveWord);
                 if (offensive > sensitivity) return true;
             }
@@ -68,5 +72,21 @@ public final class ProfanityDetector {
             }
         }
         return T[m][n];
+    }
+
+    private static String removeDuplicates(String text) {
+        if (text == null) {
+            return null;
+        }
+        char[] chars = text.toCharArray();
+        char prev = 0;
+        int k = 0;
+        for (char c: chars) {
+            if (prev != c) {
+                chars[k++] = c;
+                prev = c;
+            }
+        }
+        return new String(chars).substring(0, k);
     }
 }
