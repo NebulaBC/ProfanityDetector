@@ -1,5 +1,7 @@
 package com.uroria.projects;
 
+import java.util.List;
+
 public final class ProfanityDetector {
 
     public static String replaceCharacterReplacements(String text) {
@@ -30,6 +32,33 @@ public final class ProfanityDetector {
         }
 
         return false;
+    }
+
+    /**
+     * @author MaximDe
+     * Example:
+     *  Message:
+     *      "Fuck you"
+     *  Filtered message:
+     *      "**** you"
+     *
+     * @return filtered message
+     */
+    public static String replaceOffensiveWords(String message, String replacementBadWord, String replacementInvalidChar, double sensitivity, String... wordList) {
+        String filteredMessage = message;
+        // Replace all invalid chars with the replacementInvalidChar character
+        filteredMessage = filteredMessage.replaceAll("[^a-zA-Z0-9?!%&/=:;öäüÖÄÜß\"$€´`'@(){}\\-_,.#*\\s]", replacementInvalidChar);
+
+        for (String word : filteredMessage.split(" ")) {
+            for (String offensiveWord : wordList) {
+                double offensive = findSimilarity(word.toLowerCase(), offensiveWord);
+                if (word.toLowerCase().equals(offensiveWord) || offensive > sensitivity) {
+                    String asterisks = new String(new char[word.length()]).replace("\0", replacementBadWord);
+                    filteredMessage = filteredMessage.replaceAll(word, asterisks);
+                }
+            }
+        }
+        return filteredMessage;
     }
 
     public static double getOffensiveWordPercentage(String text, String... offensiveWords) {
