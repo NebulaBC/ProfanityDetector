@@ -44,7 +44,7 @@ public final class ProfanityDetector {
      *
      * @return filtered message
      */
-    public static String replaceOffensiveWords(String message, String replacementBadWord, String replacementInvalidChar, List<String> wordList) {
+    public static String replaceOffensiveWords(String message, String replacementBadWord, String replacementInvalidChar, double sensitivity, String... wordList) {
         String filteredMessage = message;
         // Replace all invalid chars with the replacementInvalidChar character
         filteredMessage = filteredMessage.replaceAll("[^a-zA-Z0-9?!%&/=:;öäüÖÄÜß\"$€´`'@(){}\\-_,.#*\\s]", replacementInvalidChar);
@@ -52,7 +52,7 @@ public final class ProfanityDetector {
         for (String word : filteredMessage.split(" ")) {
             for (String offensiveWord : wordList) {
                 double offensive = findSimilarity(word.toLowerCase(), offensiveWord);
-                if (word.toLowerCase().equals(offensiveWord) || offensive > 0.8D) {
+                if (word.toLowerCase().equals(offensiveWord) || offensive > sensitivity) {
                     String asterisks = new String(new char[word.length()]).replace("\0", replacementBadWord);
                     filteredMessage = filteredMessage.replaceAll(word, asterisks);
                 }
