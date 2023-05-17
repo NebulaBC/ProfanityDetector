@@ -112,9 +112,11 @@ public final class ProfanityDetector {
         char prev = 0;
         for (char c : text.toCharArray()) {
             if (c != ' ' || prev != ' ') {
-                sb.append(c);
+                if (c != prev) {
+                    sb.append(c);
+                    prev = c;
+                }
             }
-            prev = c;
         }
         return sb.toString();
     }
