@@ -1,5 +1,7 @@
 package com.uroria.projects;
 
+import java.util.Arrays;
+
 public final class ProfanityDetector {
 
     public static String replaceCharacterReplacements(String text) {
@@ -20,10 +22,14 @@ public final class ProfanityDetector {
 
         text = text.replace(".", " ").replace(",", " ");
 
+        String withoutSpace = text.replace(" ", "");
+
+        if (Arrays.stream(offensiveWords).anyMatch(withoutSpace::contains)) return true;
+
         for (String word : text.split(" ")) {
             word = removeDuplicates(word);
             for (String offensiveWord : offensiveWords) {
-                if (word.equals(offensiveWord)) return true;
+                if (word.contains(offensiveWord)) return true;
                 double offensive = findSimilarity(word, offensiveWord);
                 if (offensive > sensitivity) return true;
             }
@@ -53,7 +59,7 @@ public final class ProfanityDetector {
         return 1.0;
     }
 
-    private static int getLevenshteinDistance(String x, String y) {
+    public static int getLevenshteinDistance(String x, String y) {
         int m = x.length();
         int n = y.length();
         int[][] T = new int[m + 1][n + 1];
@@ -74,7 +80,7 @@ public final class ProfanityDetector {
         return T[m][n];
     }
 
-    private static String removeDuplicates(String text) {
+    public static String removeDuplicates(String text) {
         if (text == null) {
             return null;
         }
