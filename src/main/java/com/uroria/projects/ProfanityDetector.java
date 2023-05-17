@@ -11,7 +11,9 @@ public final class ProfanityDetector {
                 .replace("3", "e")
                 .replace("4", "a")
                 .replace("?", "i")
-                .replace("#", "a");
+                .replace("#", "a")
+                .replace("0", "o")
+                .replaceAll("[^A-Za-z0-9]", " ");
     }
 
     public static boolean containsOffensiveWords(String text, double sensitivity, String... offensiveWords) {
