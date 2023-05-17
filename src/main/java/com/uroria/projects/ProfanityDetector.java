@@ -1,5 +1,7 @@
 package com.uroria.projects;
 
+import java.util.Arrays;
+
 public final class ProfanityDetector {
 
     public static String replaceCharacterReplacements(String text) {
@@ -19,6 +21,9 @@ public final class ProfanityDetector {
         text = replaceCharacterReplacements(text);
 
         text = text.replace(".", " ").replace(",", " ");
+
+        String textWithoutSpace = text.replace(" ", "");
+        if (Arrays.stream(offensiveWords).anyMatch(textWithoutSpace::contains)) return true;
 
         for (String word : text.split(" ")) {
             word = removeDuplicates(word);
