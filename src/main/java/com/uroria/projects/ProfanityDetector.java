@@ -1,7 +1,5 @@
 package com.uroria.projects;
 
-import java.util.Arrays;
-
 public final class ProfanityDetector {
 
     public static String replaceCharacterReplacements(String text) {
@@ -22,18 +20,27 @@ public final class ProfanityDetector {
 
         text = text.replace(".", " ").replace(",", " ");
 
-        String textWithoutSpace = text.replace(" ", "");
-        if (Arrays.stream(offensiveWords).anyMatch(textWithoutSpace::contains)) return true;
+        String[] words = text.split("\\s+");
 
-        for (String word : text.split(" ")) {
-            word = removeDuplicates(word);
-            for (String offensiveWord : offensiveWords) {
-                if (word.equals(offensiveWord)) return true;
-                double offensive = findSimilarity(word, offensiveWord);
-                if (offensive > sensitivity) return true;
+        for (int i = 0; i < words.length; i++) {
+            String word = removeDuplicates(words[i]);
+            if (offensiveWordsContains(word, sensitivity, offensiveWords)) return true;
+
+            for (int j = i + 1; j < words.length; j++) {
+                word += removeDuplicates(words[j]);
+                if (offensiveWordsContains(word, sensitivity, offensiveWords)) return true;
             }
         }
 
+        return false;
+    }
+
+    private static boolean offensiveWordsContains(String word, double sensitivity, String... offensiveWords) {
+        for (String offensiveWord : offensiveWords) {
+            if (word.equals(offensiveWord)) return true;
+            double offensive = findSimilarity(word, offensiveWord);
+            if (offensive > sensitivity) return true;
+        }
         return false;
     }
 
@@ -58,19 +65,9 @@ public final class ProfanityDetector {
         return 1.0;
     }
 
-    /**
-     * @author MaximDe
-     * Example:
-     *  Message:
-     *      "Fuck you"
-     *  Filtered message:
-     *      "**** you"
-     *
-     * @return filtered message
-     */
     public static String replaceOffensiveWords(String message, String replacementBadWord, String replacementInvalidChar, double sensitivity, String... wordList) {
         String filteredMessage = message;
-        // Replace all invalid chars with the replacementInvalidChar character
+
         filteredMessage = filteredMessage.replaceAll("[^a-zA-Z0-9?!%&/=:;öäüÖÄÜß\"$€´`'@(){}\\-_,.#*\\s]", replacementInvalidChar);
 
         for (String word : filteredMessage.split(" ")) {
@@ -111,15 +108,14 @@ public final class ProfanityDetector {
         if (text == null) {
             return null;
         }
-        char[] chars = text.toCharArray();
+        StringBuilder sb = new StringBuilder();
         char prev = 0;
-        int k = 0;
-        for (char c: chars) {
-            if (prev != c) {
-                chars[k++] = c;
-                prev = c;
+        for (char c : text.toCharArray()) {
+            if (c != ' ' || prev != ' ') {
+                sb.append(c);
             }
+            prev = c;
         }
-        return new String(chars).substring(0, k);
+        return sb.toString();
     }
 }
