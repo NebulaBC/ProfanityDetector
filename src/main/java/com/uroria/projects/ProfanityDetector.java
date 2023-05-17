@@ -1,7 +1,5 @@
 package com.uroria.projects;
 
-import java.util.Arrays;
-
 public final class ProfanityDetector {
 
     public static String replaceCharacterReplacements(String text) {
@@ -22,14 +20,10 @@ public final class ProfanityDetector {
 
         text = text.replace(".", " ").replace(",", " ");
 
-        String withoutSpace = text.replace(" ", "");
-
-        if (Arrays.stream(offensiveWords).anyMatch(withoutSpace::contains)) return true;
-
         for (String word : text.split(" ")) {
             word = removeDuplicates(word);
             for (String offensiveWord : offensiveWords) {
-                if (word.contains(offensiveWord)) return true;
+                if (word.equals(offensiveWord)) return true;
                 double offensive = findSimilarity(word, offensiveWord);
                 if (offensive > sensitivity) return true;
             }
@@ -59,7 +53,35 @@ public final class ProfanityDetector {
         return 1.0;
     }
 
-    public static int getLevenshteinDistance(String x, String y) {
+    /**
+     * @author MaximDe
+     * Example:
+     *  Message:
+     *      "Fuck you"
+     *  Filtered message:
+     *      "**** you"
+     *
+     * @return filtered message
+     */
+    public static String replaceOffensiveWords(String message, String replacementBadWord, String replacementInvalidChar, double sensitivity, String... wordList) {
+        String filteredMessage = message;
+        // Replace all invalid chars with the replacementInvalidChar character
+        filteredMessage = filteredMessage.replaceAll("[^a-zA-Z0-9?!%&/=:;öäüÖÄÜß\"$€´`'@(){}\\-_,.#*\\s]", replacementInvalidChar);
+
+        for (String word : filteredMessage.split(" ")) {
+            for (String offensiveWord : wordList) {
+                double offensive = findSimilarity(word.toLowerCase(), offensiveWord);
+                if (word.toLowerCase().equals(offensiveWord) || offensive > sensitivity) {
+                    String asterisks = new String(new char[word.length()]).replace("\0", replacementBadWord);
+                    filteredMessage = filteredMessage.replaceAll(word, asterisks);
+                }
+            }
+        }
+        return filteredMessage;
+    }
+
+
+    private static int getLevenshteinDistance(String x, String y) {
         int m = x.length();
         int n = y.length();
         int[][] T = new int[m + 1][n + 1];
@@ -80,7 +102,7 @@ public final class ProfanityDetector {
         return T[m][n];
     }
 
-    public static String removeDuplicates(String text) {
+    private static String removeDuplicates(String text) {
         if (text == null) {
             return null;
         }
