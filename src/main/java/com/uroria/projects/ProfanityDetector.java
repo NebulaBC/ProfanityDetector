@@ -41,7 +41,7 @@ public final class ProfanityDetector {
     private static boolean offensiveWordsContains(String word, double sensitivity, String... offensiveWords) {
         for (String offensiveWord : offensiveWords) {
             if (word.equals(offensiveWord)) return true;
-            if (word.contains(offensiveWord)) return true;
+//            if (word.contains(offensiveWord)) return true; This is a recipe for disaster. It's so close to being useful, but I'll have to rewrite this.
             double offensive = findSimilarity(word, offensiveWord);
             if (offensive > sensitivity) return true;
         }
